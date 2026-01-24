@@ -25,10 +25,3 @@ export const updateOrderStatus = (orderId, data) =>
 
 
 
-// Get all orders (admin)
-export const getAllOrders = () =>
-  api.get("/admin/orders")
-
-// Update any order (admin)
-export const adminUpdateOrder = (orderId, data) =>
-  api.patch(`/admin/orders/${orderId}`, data)
