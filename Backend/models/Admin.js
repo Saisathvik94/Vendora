@@ -1,32 +1,26 @@
 import mongoose from "mongoose";
 
-const VendorSchema = new mongoose.Schema({
+const AdminSchema = new mongoose.Schema({
     name : {
         type: String,
         required: true
     },
     email : {
         type: String,
-        required: true,
         unique: true,
-        lowercase: true,
-        trim: true
+        required : true
     },
     password : {
         type : String,
         required : true
     },
-    businessName : {
-        type : String,
-        required : true
-    },
     role: {
         type: String,
-        default: "vendor",
+        default: "user",
         immutable: true
     }
 }, {timestamps: true})
 
-const VendorData = mongoose.model("VendorData", VendorSchema)
+const AdminData = mongoose.model("admin", AdminSchema)
 
-export default VendorData;
+export default AdminData;

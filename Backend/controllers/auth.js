@@ -1,39 +1,101 @@
-import UserData from "../models/User";
+import UserData from "../models/User.js";
+import VendorData from "../models/Vendor.js";
+import AdminData from "../models/Admin.js";
 import bcrypt from "bcryptjs"
+import { setUser } from "../services/auth.js";
 
-async function HandleUserSignUp(req, res){
-    const { name , email, password } = req.body;
 
-    if(!name || !email || !password ) return res.status(403).json({message : "Enter details correctly"})
-    
-    const user = await UserData.findOne({
-        email, password
-    })
 
-    if(user) return res.status(403).json({message : "User already exists"})
+export async function HandleUserSignUp(req, res){
+    const ALLOWED_ROLES = ["user", "vendor"]
+    try { 
+        const { name , email, password, businessName } = req.body;
+        const role = req.params.role;
 
-    const hashedPassword = await bcrypt.hash(password,10);
-    await UserData.create({
-        name,
-        email,
-        hashedPassword
-    })
+        if (!ALLOWED_ROLES.includes(role)) return res.status(400).json({ message: "Invalid role type" });
 
-    res.status(201).json({message : "User created successfully"})
+        if(!name || !email || !password ) return res.status(400).json({message : "Enter details correctly"})
+        
+        let user;
+
+        if (role === "user"){
+            user = await UserData.findOne({ email })
+        } else if (role === "vendor"){
+            user = await VendorData.findOne({ email })
+        }
+
+        if(user) return res.status(401).json({message : "User already exists"})
+
+        const hashedPassword = await bcrypt.hash(password,10);
+        if (role === "user"){
+            await UserData.create({
+                name,
+                email,
+                password: hashedPassword,
+                role
+            })
+        } else if (role === "vendor"){
+            await VendorData.create({
+                name,
+                email,
+                password: hashedPassword,
+                businessName,
+                role
+            })
+        }
+        
+
+        res.status(201).json({message : "User created successfully"})
+    } catch (error) {
+        res.status(500).json({ message: "Server error" });
+    }
 }
 
-async function HandleUserLogin(req, res){
-    const { email , password } = req.body
+export async function HandleUserLogin(req, res){
+    const ALLOWED_ROLES = ["user", "vendor", "admin"]
+    try {
+        const { email , password } = req.body
+        const role = req.params.role;
 
-    if(!email || !password) return res.status(403).json({message : "Enter your details"})
-    
-    const user = await UserData.findOne({
-        email, password
-    })
+        if (!ALLOWED_ROLES.includes(role)) return res.status(400).json({ message: "Invalid role type" });
 
-    if(!user) return res.status(404).json({message : "Invalid username or password"})
-    
-    // setUser(JWTToken, user) Adding JWt Token do at last
+        if(!email || !password) return res.status(403).json({message : "Enter your details"})
+        
+        let user;
 
-    // res.cookie('token', JWTToken)
+        if (role === "user"){
+            user = await UserData.findOne({ email })
+        } else if (role === "vendor"){
+            user = await VendorData.findOne({ email })
+        } else {
+            user = await AdminData.findOne({ email })
+        } 
+
+        if(!user) return res.status(401).json({message : "Invalid username or password"})
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        
+        if(!isMatch) return res.status(401).json({message : "Invalid username or password"})
+
+        
+        const token = await setUser({ id: user._id ,role : user.role});
+        res.cookie('token', token,{
+            httpOnly: true,
+            sameSite: "lax", // VERY IMPORTANT
+            secure: false,   // true ONLY in HTTPS
+            maxAge: 24 * 60 * 60 * 1000
+        })
+        res.status(200).json({message: "LoggedIn sucessfully"})
+    }catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+
+export async function HandleLogOut(req, res){
+    try {
+        return res.clearcookie("token")
+    }catch (error) {
+        res.status(500).json({message: error.message})
+    }
 }

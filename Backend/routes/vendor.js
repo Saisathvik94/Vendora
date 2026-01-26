@@ -1,7 +1,12 @@
 import { Router } from "express";
-import { HandleVendor } from "../controllers/vendor"
+
 const router = Router()
 
-router.post('/', HandleVendor)
+router.get('/profile', HandleVendorProfile)
+router.put('/profile', HandleUpdateProfile)
+router.get('/products', HandleVendorProducts)
+router.post('/products', HandleVendorProducts)
+router.delete('/product/:productId', HandleVendorProductsDelete)
+
 
 export default router;
