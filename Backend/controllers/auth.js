@@ -81,9 +81,8 @@ export async function HandleUserLogin(req, res){
         const token = await setUser({ id: user._id ,role : user.role});
         res.cookie('token', token,{
             httpOnly: true,
-            sameSite: "lax", // VERY IMPORTANT
+            sameSite: "lax",
             secure: false,   // true ONLY in HTTPS
-            maxAge: 24 * 60 * 60 * 1000
         })
         res.status(200).json({message: "LoggedIn sucessfully"})
     }catch (error) {
@@ -94,8 +93,22 @@ export async function HandleUserLogin(req, res){
 
 export async function HandleLogOut(req, res){
     try {
-        return res.clearcookie("token")
+        req.clearcookie("token", {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+        })
+        res.status(200).json({ message: "Logged out successfully" });
     }catch (error) {
+        res.status(500).json({message: error.message})
+    }
+}
+
+export async function HandleLoggedIn(req, res){
+    try{
+        if (req.user) return res.status(200).json({ loggedIn: true, user: req.user })
+        return res.status(401).json({ loggedIn: false })
+    } catch(error) {
         res.status(500).json({message: error.message})
     }
 }

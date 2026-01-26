@@ -1,4 +1,4 @@
-import { Children, createContext, useEffect, useState } from "react"
+import { createContext, useEffect, useState } from "react"
 import { getProfile } from "../api/auth"
 
 export const AuthContext = createContext(null)
@@ -12,18 +12,20 @@ const AuthProvider = ({children}) => {
         const checkAuth = async() => {
             try {
                 const res = await getProfile()
-                if(!res.data){
+                if(!res.data.loggedIn){
                     console.log("Not logged in redirect to login")
+                    setUser(null)
+                    setRole(null)
                     return
                 }
-                setRole(res.data.role)
+                setRole(res.data.user.role)
                 setUser(res.data.user)
 
             } catch {
                 setUser(null)
                 setRole(null)
             } finally {
-                setLoading(null)
+                setLoading(false)
             }
         }
         checkAuth()   
