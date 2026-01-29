@@ -1,24 +1,27 @@
 import api from "./axios.js"
 
-export default function LoginUser(data){
-    api.post('/auth/login/user', data)
+export function LoginUser(data){
+    return api.post('/auth/login/user', data)
 }
 
-export default function SignUpUser(data){
-    api.post('/auth/signup/user',data)
+export function SignUpUser(data){
+    return api.post('/auth/signup/user',data)
 }
-export default function LoginVendor(data){
-    api.post('/auth/login/user', data)
+export function LoginVendor(data){
+    return api.post('/auth/login/vendor', data)
 }
 
-export default function SignUpVendor(data){
-    api.post('/auth/signup/user', data)
+export function SignUpVendor(data){
+    return api.post('/auth/signup/vendor', data)
 }
-export default async function getProfile(){
+export function LoginAdmin(data){
+    return api.post('/auth/login/admin', data)
+}
+export async function getProfile(){
     const res = await api.get('/auth/profile')
     return res
 }
 
-export default function Logout(){
-    api.post('/auth/logout')
+export function Logout(){
+    return api.post('/auth/logout')
 }

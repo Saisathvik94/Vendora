@@ -14,7 +14,12 @@ export async function HandleUserSignUp(req, res){
 
         if (!ALLOWED_ROLES.includes(role)) return res.status(400).json({ message: "Invalid role type" });
 
-        if(!name || !email || !password ) return res.status(400).json({message : "Enter details correctly"})
+        if(role === "user"){
+            if(!name || !email || !password) return res.status(400).json({message : "Enter details correctly"})
+        } else {
+            if(!name || !email || !password || !businessName) return res.status(400).json({message : "Enter details correctly"})
+        }
+        
         
         let user;
 
@@ -24,7 +29,7 @@ export async function HandleUserSignUp(req, res){
             user = await VendorData.findOne({ email })
         }
 
-        if(user) return res.status(401).json({message : "User already exists"})
+        if(user) return res.status(409).json({message : "User already exists"})
 
         const hashedPassword = await bcrypt.hash(password,10);
         if (role === "user"){
@@ -78,13 +83,13 @@ export async function HandleUserLogin(req, res){
         if(!isMatch) return res.status(401).json({message : "Invalid username or password"})
 
         
-        const token = await setUser({ id: user._id ,role : user.role});
+        const token = await setUser({ id: user._id, name: user.name,role : user.role, email : user.email});
         res.cookie('token', token,{
             httpOnly: true,
             sameSite: "lax",
             secure: false,   // true ONLY in HTTPS
         })
-        res.status(200).json({message: "LoggedIn sucessfully"})
+        res.status(200).json({message: "LoggedIn sucessfully" , user: { name: user.name, role: user.role}})
     }catch (error) {
         res.status(500).json({message: error.message})
     }
@@ -93,7 +98,7 @@ export async function HandleUserLogin(req, res){
 
 export async function HandleLogOut(req, res){
     try {
-        req.clearcookie("token", {
+        res.clearCookie("token", {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
@@ -106,8 +111,10 @@ export async function HandleLogOut(req, res){
 
 export async function HandleLoggedIn(req, res){
     try{
-        if (req.user) return res.status(200).json({ loggedIn: true, user: req.user })
-        return res.status(401).json({ loggedIn: false })
+        if (req.user){
+            return res.status(200).json({ loggedIn: true, user: req.user })
+        }
+        return res.status(200).json({ loggedIn: false })
     } catch(error) {
         res.status(500).json({message: error.message})
     }

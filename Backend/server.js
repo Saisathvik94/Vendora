@@ -1,5 +1,6 @@
 import express from "express"
 import dotenv from "dotenv"
+import cors from "cors"
 import cookieParser from "cookie-parser";
 import connectMongoDB from "./config/db.js"
 import HomeRouter from "./routes/home.js"
@@ -17,6 +18,11 @@ console.log("JWT_SECRET:", process.env.JWT_SECRET);
 const app = express()
 const port = process.env.PORT
 
+//CORS
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
 // MiddleWare
 app.use(express.json());
