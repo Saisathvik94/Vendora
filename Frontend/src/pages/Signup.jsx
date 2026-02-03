@@ -40,9 +40,11 @@ function SignupPage(){
                 response = await SignUpUser(formData)
             }
 
-            console.log(response.data)
+            setFormData({ email: '', password: '' })
             toast.success("Account created! Please login.");
-            navigate("/login")
+            setTimeout(() => {
+                navigate("/login")
+            }, 1000)
         } catch(error) {
             console.error('Error:', error.message)
             const message = error.response.data.message

@@ -6,7 +6,7 @@ export const AuthContext = createContext(null)
 const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null)
     const [role, setRole] = useState(null)
-    const [isLoggedIn, setisLoggedIn] = useState(null)
+    const [isLoggedIn, setisLoggedIn] = useState(false)
     const [loading, setLoading] = useState(true)
 
     const checkAuth = async() => {

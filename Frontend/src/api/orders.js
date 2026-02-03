@@ -6,8 +6,8 @@ export const createOrder = (data) =>
   api.post("/orders", data)
 
 // Get logged-in user's orders
-export const getMyOrders = () =>
-  api.get("/orders/my")
+export const getUserOrders = () =>
+  api.get("/user/orders")
 
 // Get single order (user)
 export const getOrderById = (orderId) =>

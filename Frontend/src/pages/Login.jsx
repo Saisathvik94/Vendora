@@ -1,8 +1,9 @@
 import { useState, useEffect, useContext } from 'react';
+import { motion } from "framer-motion"
 import toast from "react-hot-toast"
 import { Link, useNavigate } from "react-router-dom"
 import { AuthContext } from "../context/AuthContext.jsx";
-import { LoginAdmin, LoginUser, LoginVendor } from '../api/auth.js';
+import { LoginUser, LoginVendor } from '../api/auth.js';
 import LoginImage from '../assets/Login.jpg'
 
 function LoginPage(){
@@ -43,8 +44,14 @@ function LoginPage(){
             }
 
             checkAuth()
+
+            setFormData({ 
+                email: '', password: '' 
+            })
             toast.success(`Welcome ${response.data.user.name}`);
-            navigate("/")
+            setTimeout(() => {
+                navigate("/")
+            }, 1000)
         } catch(error) {
             console.error('Error:', error)
             const message = error.response.data.message
@@ -56,7 +63,11 @@ function LoginPage(){
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-100 p-6">
-            <div className="bg-[#FAF9F6] grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5 }}
+                className="bg-[#FAF9F6] grid grid-cols-1 md:grid-cols-2 gap-5 max-w-5xl w-full bg-white rounded-2xl shadow-2xl overflow-hidden">
                 <div className="hidden m-3 md:block">
                     <img src={LoginImage} alt="image" className="w-full h-full rounded-md object-cover"/>
                 </div>
@@ -111,7 +122,7 @@ function LoginPage(){
                     </form>
                     <Link to="/signup" className="text-grey text-center m-2">Dont have an account</Link>
                 </div>
-            </div>
+            </motion.div>
         </div>
     )
 }

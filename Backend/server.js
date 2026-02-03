@@ -14,7 +14,6 @@ import OrdersRouter from "./routes/orders.js"
 
 // dotenv config
 dotenv.config();
-console.log("JWT_SECRET:", process.env.JWT_SECRET);
 const app = express()
 const port = process.env.PORT
 
@@ -34,8 +33,8 @@ app.use(cookieParser());
 app.use('/', HomeRouter)
 app.use('/auth', AuthRouter)
 app.use('/products', ProductsRouter)
-app.use('/users', UsersRouter)
-app.use('/vendors', VendorsRouter)
+app.use('/user', UsersRouter)
+app.use('/vendor', VendorsRouter)
 app.use('/admin', AdminRouter)
 app.use('/orders', OrdersRouter)
 

@@ -20,9 +20,9 @@ export const getVendorProducts = () =>
   api.get("/vendor/products")
 
 // Update product
-export const updateProduct = (productId, data) =>
-  api.patch(`/vendor/products/${productId}`, data)
+export const updateVendorProduct = (productId, data) =>
+  api.patch(`/vendor/product/${productId}`, data)
 
 // Delete product
-export const deleteProduct = (productId) =>
-  api.delete(`/vendor/products/${productId}`)
+export const deleteVendorProduct = (productId) =>
+  api.delete(`/vendor/product/${productId}`)

@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const ProductSchema = new mongoose.Schema({
+    vendorId: { 
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: "VendorData", 
+        required: true 
+    },
+
     name : {
         type: String,
         required: true

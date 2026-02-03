@@ -14,9 +14,9 @@ export function LoginVendor(data){
 export function SignUpVendor(data){
     return api.post('/auth/signup/vendor', data)
 }
-export function LoginAdmin(data){
-    return api.post('/auth/login/admin', data)
-}
+// export function LoginAdmin(data){
+//     return api.post('/auth/login/admin', data)
+// }
 export async function getProfile(){
     const res = await api.get('/auth/profile')
     return res

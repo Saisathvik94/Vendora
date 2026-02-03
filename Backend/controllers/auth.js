@@ -52,7 +52,7 @@ export async function HandleUserSignUp(req, res){
 
         res.status(201).json({message : "User created successfully"})
     } catch (error) {
-        res.status(500).json({ message: "Server error" });
+        res.status(500).json({message: error.message})
     }
 }
 
@@ -89,7 +89,7 @@ export async function HandleUserLogin(req, res){
             sameSite: "lax",
             secure: false,   // true ONLY in HTTPS
         })
-        res.status(200).json({message: "LoggedIn sucessfully" , user: { name: user.name, role: user.role}})
+        res.status(200).json({message: "LoggedIn sucessfully" , user: { id: user._id, name: user.name, role: user.role}})
     }catch (error) {
         res.status(500).json({message: error.message})
     }
