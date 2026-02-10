@@ -86,8 +86,8 @@ export async function HandleUserLogin(req, res){
         const token = await setUser({ id: user._id, name: user.name,role : user.role, email : user.email});
         res.cookie('token', token,{
             httpOnly: true,
-            sameSite: "lax",
-            secure: false,   // true ONLY in HTTPS
+            sameSite: "none",
+            secure: true,    // true ONLY in HTTPS
         })
         res.status(200).json({message: "LoggedIn sucessfully" , user: { id: user._id, name: user.name, role: user.role}})
     }catch (error) {
